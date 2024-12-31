@@ -66,7 +66,7 @@ jobs:
       
     # Apply the Terraform plan
     - name: Terraform Apply
-      run: terraform apply -var instanceName=${{ github.event.inputs.instanceName }} -var awsRegion=${{ github.event.inputs.awsRegion }} -var instanceType=${{ github.event.inputs.instanceType }} --auto-approve=true
+      run: terraform apply -var instanceName=${{ github.event.inputs.instanceName }} -var awsRegion=${{ github.event.inputs.awsRegion }} -var instanceType=${{ github.event.inputs.instanceType }} -input=false --auto-approve=true
       working-directory: .
 
   # Job for destroying the EC2 instance
