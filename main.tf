@@ -11,8 +11,6 @@ terraform {
 
 provider "aws" {
   region     = var.awsRegion
-  access_key = var.access_key
-  secret_key = var.secret_key
 }
 
 data "aws_ami" "amzn_linux_2023_latest" {

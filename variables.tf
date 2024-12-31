@@ -1,5 +1,3 @@
-variable "access_key" {}
-variable "secret_key" {}
 variable "awsRegion" {
     description = "AWS region to deploy resources"
     type        = string
