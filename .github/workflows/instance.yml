@@ -1,13 +1,14 @@
 # Define the name of the GitHub Action workflow
-name: Create an ec2 instance
+name: Create an EC2 Instance
+
 # This workflow is manually triggered using the GitHub Actions UI
 on:
   workflow_dispatch:
     # Define inputs that are required for the manual trigger
     inputs:
       instanceName:
-        description: 'Name of the AWS Instance'  # What's this input for?
-        required: true  # Is it optional or required?
+        description: 'Name of the AWS Instance'
+        required: true
       awsRegion:
         description: 'AWS Region for the instance'
         required: true
@@ -17,9 +18,10 @@ on:
       action:
         description: 'Action to perform (apply/destroy)'
         required: true
+
 # Jobs to be executed in this workflow
 jobs:
-  # Job for applying the ec2 instance
+  # Job for applying the EC2 instance
   apply_ec2:
     # Use the latest Ubuntu runner
     runs-on: ubuntu-latest
@@ -29,11 +31,11 @@ jobs:
     # Define the steps for this job
     steps:
     
-    # checkout the code from the repository
+    # Checkout the code from the repository
     - name: Checkout code
       uses: actions/checkout@v2
 
-# adding aws keys. Please store the value of these key in GitHub variables
+    # Configure AWS credentials (make sure AWS keys are stored in GitHub secrets)
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -41,28 +43,27 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
     
-    # Initialize Terraform 
+    # Initialize Terraform
     - name: Terraform Init
       run: terraform init
-      working-directory: .  # Where should this command be run?
-      
+      working-directory: .  # Working directory for Terraform commands
+    
     # Format Terraform code
     - name: Terraform Format
       run: terraform fmt
       working-directory: .
       
-    # Validate the Terraform code 
+    # Validate the Terraform code
     - name: Terraform Validate
       run: terraform validate
       working-directory: .
       
     # Apply the Terraform plan
-    - name: Terraform vars
-    - name: terraform apply
+    - name: Terraform Apply
       run: terraform apply -var instanceName=${{ github.event.inputs.instanceName }} -var awsRegion=${{ github.event.inputs.awsRegion }} -var instanceType=${{ github.event.inputs.instanceType }} -auto-approve
       working-directory: .
 
-  # Destroying the  ec2 instance
+  # Job for destroying the EC2 instance
   destroy_instance:
     runs-on: ubuntu-latest
     
@@ -70,10 +71,11 @@ jobs:
     if: ${{ github.event.inputs.action == 'destroy' }}
     
     steps:
+    # Checkout the code from the repository
     - name: Checkout code
       uses: actions/checkout@v2
-      
-# adding aws keys. Please store the value of these key in GitHub variables
+
+    # Configure AWS credentials (make sure AWS keys are stored in GitHub secrets)
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -81,17 +83,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         
+    # Initialize Terraform
     - name: Terraform Init
       run: terraform init
       working-directory: .
       
-    - name: Terraform FMT
+    # Format Terraform code
+    - name: Terraform Format
       run: terraform fmt
       working-directory: .
       
-      
-    # Destroy all resources 
+    # Destroy the EC2 instance
     - name: Terraform Destroy
-    - name: terraform apply
       run: terraform destroy -var instanceName=${{ github.event.inputs.instanceName }} -var awsRegion=${{ github.event.inputs.awsRegion }} -auto-approve
       working-directory: .
