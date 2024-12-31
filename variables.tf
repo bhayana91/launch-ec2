@@ -20,4 +20,8 @@ variable "subnet_id" {
   type        = string
   default     = "subnet-02bf5ed930efbb38d"
   }
-
+variable "vpc_id" {
+    description = "VPC ID for EC2 instance"
+  type        = string
+  default     = "vpc-0b624db0ee4ea6d7f"
+  }

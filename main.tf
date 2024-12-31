@@ -31,7 +31,7 @@ data "aws_ami" "amzn_linux_2023_latest" {
 }
 
 resource "aws_security_group" "backstage" {
-  name        = "${var.environment}-backstage-sg"
+  name        = "${var.instanceName}-backstage-sg"
   description = "Security group for Backstage EC2 instance"
   vpc_id      = var.vpc_id
 
@@ -50,7 +50,7 @@ resource "aws_security_group" "backstage" {
   }
 
   tags = {
-    Name = "${var.environment}-backstage-sg"
+    Name = "${var.instanceName}-backstage-sg"
   }
 }
 
