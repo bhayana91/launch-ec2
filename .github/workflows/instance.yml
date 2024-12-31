@@ -88,7 +88,11 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-south-1
-        
+    # Install Terraform
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 'latest'  # You can specify a version like '1.4.0', or use 'latest'    
     # Initialize Terraform
     - name: Terraform Init
       run: terraform init
@@ -101,5 +105,5 @@ jobs:
       
     # Destroy the EC2 instance
     - name: Terraform Destroy
-      run: terraform destroy -var instanceName=${{ github.event.inputs.instanceName }} -var awsRegion=${{ github.event.inputs.awsRegion }} -auto-approve
+      run: terraform destroy -var instanceName=${{ github.event.inputs.instanceName }} -var awsRegion=${{ github.event.inputs.awsRegion }} -input=false --auto-approve=true
       working-directory: .
